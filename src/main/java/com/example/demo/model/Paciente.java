@@ -1,11 +1,14 @@
 package com.example.demo.model;
+
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -85,8 +88,8 @@ public class Paciente {
     @Column(name="tratamientos_vigentes")
     private String tratamientosVigentes;
 
-
-
+    @OneToMany(mappedBy = "paciente")
+    private List<Registro> registros;
 
     
 }
