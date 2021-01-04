@@ -15,8 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
-import com.example.demo.model.Medico;
-import com.example.demo.model.MedicoRepository;
+import com.example.demo.model.Usuario;
+import com.example.demo.model.UsuarioRepository;
 
 /**
  * TokenFiltro
