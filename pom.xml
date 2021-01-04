@@ -55,6 +55,11 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>${mysql.driver.version}</version><!--$NO-MVN-MAN-VER$ -->
 		</dependency>
+
+		 <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
 		
 	</dependencies>
 
