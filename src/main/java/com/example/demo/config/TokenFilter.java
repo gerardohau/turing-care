@@ -1,22 +1,23 @@
 package com.example.demo.config;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
+import com.example.demo.model.Usuario;
+import com.example.demo.repository.UsuarioRepository;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
-
-import com.example.demo.model.Usuario;
-import com.example.demo.model.UsuarioRepository;
 
 /**
  * TokenFiltro
@@ -26,7 +27,7 @@ public class TokenFilter extends GenericFilterBean {
 	private final UsuarioRepository usuarioRepo;
 	private final int SECONDS_ONE_MINUTE = 60;
 
-	public TokenFiltro(final UsuarioRepository usuarioRepository) {
+	public TokenFilter(final UsuarioRepository usuarioRepository) {
 		this.usuarioRepo = usuarioRepository;
 	}
 

@@ -85,5 +85,10 @@ public class Medico {
 
     @OneToMany(mappedBy = "medico")
     private List<Registro> registros;
-    
+
+    @OneToMany(mappedBy = "medico")
+    private List<Usuario> usuario;
+
+    @OneToMany(mappedBy = "medico")
+    private List<Paciente> pacientes;
 }
