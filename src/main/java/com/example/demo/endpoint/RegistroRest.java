@@ -1,7 +1,7 @@
-package com.example.demo.rest;
+package com.example.demo.endpoint;
 
-import com.example.demo.model.Registro;
-import com.example.demo.request.RegistroRequest;
+import com.example.demo.data.entities.Registro;
+import com.example.demo.endpoint.message.RegistroRequest;
 import com.example.demo.service.RegistroService;
 
 import org.springframework.beans.factory.annotation.Autowired;

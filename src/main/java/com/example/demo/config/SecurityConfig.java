@@ -1,6 +1,6 @@
 package com.example.demo.config;
 
-import com.example.demo.repository.UsuarioRepository;
+import com.example.demo.data.dao.UsuarioRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
