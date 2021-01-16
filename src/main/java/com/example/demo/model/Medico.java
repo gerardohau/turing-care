@@ -4,9 +4,12 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -24,8 +27,9 @@ public class Medico {
     @Column(name="doctor_id")
     private Integer doctor_id;
 
-    @Column(name="clinica_id")
-    private Integer clinica_id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="clinica_id")
+    Clinica clinica;
 
     @Column(name="nombre")
     private String nombre;
@@ -39,7 +43,7 @@ public class Medico {
     @Column(name="curp")
     private String curp;
     
-    @Column(name="urlCedulta")
+    @Column(name="url_cedula")
     private String urlCedulta;
 
     @Column(name="url_foto")
@@ -56,9 +60,6 @@ public class Medico {
 
     @Column(name="telefono")
     private String telefono;
-
-    @Column(name="user_id")
-    private String userId;
 
     @OneToMany(mappedBy = "medico")
     private List<Registro> registros;
