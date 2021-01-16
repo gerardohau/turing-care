@@ -1,9 +1,9 @@
-package com.example.demo.repository;
+package com.example.demo.data.dao;
 
 import java.util.List;
 
-import com.example.demo.model.Medico;
-import com.example.demo.model.Registro;
+import com.example.demo.data.entities.Medico;
+import com.example.demo.data.entities.Registro;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

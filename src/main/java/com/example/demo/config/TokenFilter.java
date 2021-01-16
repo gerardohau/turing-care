@@ -10,8 +10,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import com.example.demo.model.Usuario;
-import com.example.demo.repository.UsuarioRepository;
+import com.example.demo.data.dao.UsuarioRepository;
+import com.example.demo.data.entities.Usuario;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
