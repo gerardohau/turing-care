@@ -47,7 +47,7 @@ public class Registro{
   private Date fechaCita;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="medico_id")
+  @JoinColumn(name="doctor_id")
   Medico medico;
 
   @ManyToOne(fetch = FetchType.LAZY)

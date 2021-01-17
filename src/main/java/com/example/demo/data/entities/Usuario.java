@@ -24,8 +24,8 @@ public class Usuario {
   
   @GeneratedValue(strategy = GenerationType.IDENTITY )
   @Id
-  @Column(name = "usuario_id")
-  private Integer registroId;
+  @Column(name = "user_id")
+  private Integer usuarioId;
 
   @Column(name="usuario")
   private String usuario;
@@ -36,10 +36,13 @@ public class Usuario {
   @Column(name="token")
   private String token;
 
-  @Column(name = "tiempoIniToken")
+  @Column(name="role")
+  private String role;
+
+  @Column(name = "tiempo_init_token")
   private LocalDateTime tiempoIniToken;
 
-  @Column(name = "intengoslogin")
+  @Column(name = "intentos_login")
   private Integer intentoLogin = 0;
 
   @ManyToOne(fetch = FetchType.LAZY)
