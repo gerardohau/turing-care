@@ -1,5 +1,7 @@
 package com.example.demo.data.dao;
 
+import java.util.Optional;
+
 import com.example.demo.data.entities.Medico;
 import com.example.demo.data.entities.Usuario;
 
@@ -11,4 +13,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
   
   Usuario findByMedico(Medico medico);
   Usuario findByToken(String token); 
+  Optional<Usuario> findByUsuario(String usuario);
 }

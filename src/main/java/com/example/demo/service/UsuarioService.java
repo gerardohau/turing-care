@@ -7,17 +7,17 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
+
 import javax.validation.Valid;
 
+import com.example.demo.data.dao.UsuarioRepository;
+import com.example.demo.data.entities.Usuario;
+import com.example.demo.endpoint.message.*;
+import com.example.demo.exception.ResourceNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import com.example.demo.model.Usuario;
-import com.example.demo.repository.UsuarioRepository;
-import com.example.demo.request.UsuarioRequest;
-import com.example.demo.request.loginRequest;
 
 @Service
 public class UsuarioService{
@@ -37,28 +37,28 @@ public class UsuarioService{
            optional = usuarioRepository.findById(idUsuario);
            return optional.get();
         }catch(NullPointerException | NoSuchElementException e){
-            printf("no existe");
+            throw new ResourceNotFoundException("El usuario no se ha encontrado");
         }
 	}
 
-	public Usuario createUsuario(@Valid UsuarioRequest request) {
+	public Usuario createUsuario(@Valid MessageUsuario request) {
         try{     
-            Optional<Usuario> optional = usuarioRepository.findByEmail(request.getEmail());
+            Optional<Usuario> optional = usuarioRepository.findByUsuario(request.getUsername() );
             if(optional.isPresent()){
-                printf("no existe");
+                throw new ResourceNotFoundException("El usuario no se ha encontrado");
             }
 
-        Usuario usuario = new Usuario();
-        this.changeRequestUsuarioToUsuario(request,usuario);
-        return usuarioRepository.save(usuario);
+            Usuario usuario = new Usuario();
+            this.changeRequestUsuarioToUsuario(request,usuario);
+            return usuarioRepository.save(usuario);
         }catch(NullPointerException | NoSuchElementException e){
-            System.out.println("no existe"); 
+            throw new ResourceNotFoundException("El usuario no se ha encontrado");
         }
 	}
 
-	public Usuario updateUsuario(UsuarioRequest request) {
+	public Usuario updateUsuario(MessageUsuario request) {
         
-        Usuario usuario;
+        Usuario usuario = new Usuario();
         try{
             Optional<Usuario> optional = usuarioRepository.findById(request.getIdUsuario());
             usuario = optional.get();
@@ -67,28 +67,29 @@ public class UsuarioService{
         }
         
         Usuario user = (Usuario)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(user.getIdUsuario()==usuario.getIdUsuario()){
+        if(user.getUsuarioId() ==usuario.getUsuarioId() ){
             changeRequestUsuarioToUsuario(request, usuario);
             return usuarioRepository.save(usuario);
         }else{
             System.out.println("no existe"); 
         }
+        return usuario;
 	}
 
 	public void deleteUsuario() {
       try{
           Usuario user = (Usuario)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
           usuarioRepository.delete(user);
-     }catch(NullPointerException | NoSuchElementException e){
+      }catch(NullPointerException | NoSuchElementException e){
         System.out.println("no existe"); 
-        }
+      }
     }
 
-    public Usuario login(loginRequest request) {
-        Usuario usuario;
+    public Usuario login(MessageLogin request) {
+        Usuario usuario = new Usuario();
 
         try {
-            usuario = usuarioRepository.findByUsername(request.getUsername()).get();
+            usuario = usuarioRepository.findByUsuario(request.getUsername()).get();
         }
         catch(NoSuchElementException e){
             System.out.println("no existe"); 
@@ -125,24 +126,17 @@ public class UsuarioService{
         return localDate;
     }
 
-    public void changeRequestUsuarioToUsuario(UsuarioRequest request, Usuario usuario){
+    public void changeRequestUsuarioToUsuario(MessageUsuario request, Usuario usuario){
             //Validar si es necesario crear un token
-            if(usuario.getIdUsuario() == null){
-                usuario.setState(true);
-                usuario.setToken(this.crearToken());
-                LocalDateTime tiempoIniToken = LocalDateTime.now();
-                usuario.setTiempoIniToken(tiempoIniToken);
-            }else{
-                usuario.setState(request.getState());
-            }
+        if(usuario.getUsuarioId() == null) {
+            usuario.setToken(this.crearToken());
+            LocalDateTime tiempoIniToken = LocalDateTime.now();
+            usuario.setTiempoIniToken(tiempoIniToken);
+        }
             
-            usuario.setName(request.getName());
-            usuario.setUsername(request.getUsername());
-            usuario.setEmail(request.getEmail());
-            usuario.setPassword(request.getPassword());
-            //Convertir string a fecha
-            LocalDate birthday =  this.convertStringTLocalDate(request.getBirthday());
-            usuario.setBirthday(birthday);
+        usuario.setUsuario(request.getUsername());
+        usuario.setRole(request.getRole());
+        usuario.setPassword(request.getPassword());
     }
 
     public void revokeToken (String token){
