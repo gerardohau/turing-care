@@ -6,18 +6,17 @@ import java.util.List;
 import java.util.ArrayList;
 
 
+import com.example.demo.data.dao.PacienteRepository;
 import com.example.demo.data.dao.RegistroRepository;
 import com.example.demo.data.entities.Medico;
 import com.example.demo.data.entities.Paciente;
 import com.example.demo.data.entities.Registro;
 import com.example.demo.endpoint.message.RegistroRequest;
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.Medico;
-import com.example.demo.model.Paciente;
-import com.example.demo.model.Registro;
-import com.example.demo.repository.RegistroRepository;
-import com.example.demo.repository.PacienteRepository;
-import com.example.demo.request.RegistroRequest;
+import com.example.demo.data.entities.Medico;
+import com.example.demo.data.entities.Paciente;
+import com.example.demo.data.entities.Registro;
+import com.example.demo.endpoint.message.RegistroRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,10 +65,14 @@ public class RegistroService {
 
   public List<Registro> obtenerHistorialMedico(Integer pacienteId) {
     Paciente paciente = pacienteRepository.findById(pacienteId).get();
-    paciente.getRegistros().size();
-    System.out.println("el id del paciente");
-    System.out.println(paciente.getPacienteId());
-    return paciente.getRegistros();
+    //paciente.getRegistros().size();
+    List<Registro> registros = paciente.getRegistros();
+
+    for( Registro registro : registros) {
+      registro.setPaciente(null);
+    }
+
+    return registros;
   }
 
   public Registro convertRegistroRequestToRegistro(RegistroRequest registroRequest, Registro registro, boolean isUpdate ){
