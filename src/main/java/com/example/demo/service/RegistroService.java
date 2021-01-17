@@ -1,26 +1,19 @@
 package com.example.demo.service;
 
 import java.util.Date;
-import java.util.Optional;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Optional;
 
-
-import com.example.demo.data.dao.PacienteRepository;
 import com.example.demo.data.dao.RegistroRepository;
 import com.example.demo.data.entities.Medico;
 import com.example.demo.data.entities.Paciente;
 import com.example.demo.data.entities.Registro;
 import com.example.demo.endpoint.message.RegistroRequest;
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.data.entities.Medico;
-import com.example.demo.data.entities.Paciente;
-import com.example.demo.data.entities.Registro;
-import com.example.demo.endpoint.message.RegistroRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
 @Service
 public class RegistroService {
   
