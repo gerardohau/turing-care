@@ -20,7 +20,7 @@ import com.example.demo.endpoint.message.RegistroRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.dao.EmptyResultDataAccessException;
 @Service
 public class RegistroService {
   
@@ -73,6 +73,17 @@ public class RegistroService {
     }
 
     return registros;
+  }
+
+  public String deleteRegister(Integer idRegistro) {
+    try {
+      registroRepository.deleteById(idRegistro);
+
+      return "Borrado Exitosamente";
+    } catch (EmptyResultDataAccessException e) {
+
+      return "Registro inexistente";
+    }
   }
 
   public Registro convertRegistroRequestToRegistro(RegistroRequest registroRequest, Registro registro, boolean isUpdate ){

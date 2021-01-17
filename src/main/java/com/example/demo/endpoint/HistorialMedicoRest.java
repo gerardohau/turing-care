@@ -23,6 +23,6 @@ public class HistorialMedicoRest {
   @GetMapping("/historial_medico/{idPaciente}")
   public ResponseEntity<List<Registro>> obtenerHistorialMedico(@PathVariable Integer idPaciente) {
 
-    return ResponseEntity.status(HttpStatus.CREATED).body(registroService.obtenerHistorialMedico(idPaciente));
+    return ResponseEntity.status(HttpStatus.OK).body(registroService.obtenerHistorialMedico(idPaciente));
   }
 }

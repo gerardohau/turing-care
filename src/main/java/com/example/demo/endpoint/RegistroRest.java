@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
 public class RegistroRest {
@@ -21,5 +23,13 @@ public class RegistroRest {
   public ResponseEntity<Registro> procesoRegistro(@RequestBody RegistroRequest registroRequest){
     Registro registro = registroService.processRegister(registroRequest);
     return ResponseEntity.status(HttpStatus.CREATED).body(registro);
+  }
+
+  @DeleteMapping("/registro/{idRegistro}")
+  public ResponseEntity borrarRegistro(@PathVariable Integer idRegistro){
+      String response = registroService.deleteRegister(idRegistro);
+      return ResponseEntity
+      .ok()
+      .body("Respuesta: " + response);
   }
 }
