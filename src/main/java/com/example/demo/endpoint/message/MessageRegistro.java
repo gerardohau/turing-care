@@ -7,9 +7,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class RegistroRequest {
+@NoArgsConstructor
+public class MessageRegistro {
   
   private Integer idRegistro;
 

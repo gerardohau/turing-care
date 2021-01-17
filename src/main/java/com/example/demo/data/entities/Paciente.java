@@ -27,9 +27,6 @@ public class Paciente {
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     @Column(name = "paciente_id")
     private Integer paciente_id;
-
-    @Column(name="clinica_id")
-    private Integer clinica_id;
  
     @Column(name="nombre")
     private String nombre;

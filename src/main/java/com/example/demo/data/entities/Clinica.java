@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -50,12 +52,6 @@ public class Clinica {
 
     @Column(name="pais")
     private String pais;
-
-    @Column(name="telefono")
-    private String telefono;
-
-    @Column(name="user_id")
-    private String userId;
 
     @OneToMany(mappedBy = "clinica")
     private List<Medico> medicos;
