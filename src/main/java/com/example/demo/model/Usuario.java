@@ -24,7 +24,7 @@ public class Usuario {
   
   @GeneratedValue(strategy = GenerationType.IDENTITY )
   @Id
-  @Column(name = "usuario_id")
+  @Column(name = "user_id")
   private Integer registroId;
 
   @Column(name="usuario")
@@ -39,7 +39,7 @@ public class Usuario {
   @Column(name = "tiempoIniToken")
   private LocalDateTime tiempoIniToken;
 
-  @Column(name = "intengoslogin")
+  @Column(name = "intentoslogin")
   private Integer intentoLogin = 0;
 
   @ManyToOne(fetch = FetchType.LAZY)

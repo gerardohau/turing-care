@@ -2,12 +2,16 @@ package com.example.demo.service;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.List;
+import java.util.ArrayList;
+
 
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Medico;
 import com.example.demo.model.Paciente;
 import com.example.demo.model.Registro;
 import com.example.demo.repository.RegistroRepository;
+import com.example.demo.repository.PacienteRepository;
 import com.example.demo.request.RegistroRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +25,10 @@ public class RegistroService {
 
   @Autowired
   private RegistroRepository registroRepository;
+
+  @Autowired
+  private PacienteRepository pacienteRepository;
+
   
   public Registro processRegister(RegistroRequest registroRequest){
    
@@ -51,6 +59,13 @@ public class RegistroService {
     return registro;
   }
 
+  public List<Registro> obtenerHistorialMedico(Integer pacienteId) {
+    Paciente paciente = pacienteRepository.findById(pacienteId).get();
+    paciente.getRegistros().size();
+    System.out.println("el id del paciente");
+    System.out.println(paciente.getPacienteId());
+    return paciente.getRegistros();
+  }
 
   public Registro convertRegistroRequestToRegistro(RegistroRequest registroRequest, Registro registro, boolean isUpdate ){
     Registro nuevoRegistro = registro;

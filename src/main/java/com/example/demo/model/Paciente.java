@@ -26,10 +26,10 @@ public class Paciente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     @Column(name = "paciente_id")
-    private Integer paciente_id;
+    private Integer pacienteId;
 
     @Column(name="clinica_id")
-    private Integer clinica_id;
+    private Integer clinicaId;
  
     @Column(name="nombre")
     private String nombre;
