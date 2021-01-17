@@ -31,4 +31,6 @@ public class MessageUsuario {
     private String token;
 
     private String role;
+
+    private Integer medicoId;
 }
