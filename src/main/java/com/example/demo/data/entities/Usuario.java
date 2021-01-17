@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.demo.data.entities;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +25,7 @@ public class Usuario {
   @GeneratedValue(strategy = GenerationType.IDENTITY )
   @Id
   @Column(name = "user_id")
-  private Integer registroId;
+  private Integer usuarioId;
 
   @Column(name="usuario")
   private String usuario;
@@ -36,10 +36,13 @@ public class Usuario {
   @Column(name="token")
   private String token;
 
-  @Column(name = "tiempoIniToken")
+  @Column(name="role")
+  private String role;
+
+  @Column(name = "tiempo_init_token")
   private LocalDateTime tiempoIniToken;
 
-  @Column(name = "intentoslogin")
+  @Column(name = "intentos_login")
   private Integer intentoLogin = 0;
 
   @ManyToOne(fetch = FetchType.LAZY)

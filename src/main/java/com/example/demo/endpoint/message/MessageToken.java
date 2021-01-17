@@ -1,4 +1,4 @@
-package com.example.demo.request;
+package com.example.demo.endpoint.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

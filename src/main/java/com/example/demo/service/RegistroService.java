@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.ArrayList;
 
 
+import com.example.demo.data.dao.RegistroRepository;
+import com.example.demo.data.entities.Medico;
+import com.example.demo.data.entities.Paciente;
+import com.example.demo.data.entities.Registro;
+import com.example.demo.endpoint.message.RegistroRequest;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Medico;
 import com.example.demo.model.Paciente;
