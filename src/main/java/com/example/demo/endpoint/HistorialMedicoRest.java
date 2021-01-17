@@ -1,4 +1,4 @@
-package com.example.demo.rest;
+package com.example.demo.endpoint;
 
 import java.util.List;
 import java.util.ArrayList;
