@@ -54,9 +54,9 @@ public class RegistroService {
     Optional<Medico> medicoOpt = medicoRepository.findById( registroRequest.getIdMedico() ); 
     Optional<Paciente> pacienteOpt = pacienteRepository.findById( registroRequest.getIdPaciente() ); 
     
-    if( pacienteOpt.isEmpty() || medicoOpt.isEmpty()  ){
-      throw new ResourceNotFoundException("El medico o el paciente no existe");
-    }
+    // if( pacienteOpt.isEmpty() || medicoOpt.isEmpty()  ){
+    //   throw new ResourceNotFoundException("El medico o el paciente no existe");
+    // }
     registro = this.convertRegistroRequestToRegistro(registroRequest, registro, isNew);
     
     medico = medicoOpt.get();
@@ -106,14 +106,14 @@ public class RegistroService {
     
     nuevoRegistro.setAsunto( isNew 
       ? registroRequest.getAsunto()
-      : registroRequest.getAsunto() != null && registroRequest.getAsunto().isEmpty()
+      : registroRequest.getAsunto() != null
         ? registroRequest.getAsunto()
         : nuevoRegistro.getAsunto()
     );
     
     nuevoRegistro.setDescripcion( isNew 
       ? registroRequest.getDescripcion()
-      : registroRequest.getDescripcion() != null && registroRequest.getDescripcion().isEmpty()
+      : registroRequest.getDescripcion() != null 
         ? registroRequest.getDescripcion()
         : nuevoRegistro.getDescripcion()
     );
@@ -124,7 +124,7 @@ public class RegistroService {
 
     nuevoRegistro.setFechaCita(isNew 
     ? utilService.convertStringToDate(registroRequest.getFechaCita())
-    : registroRequest.getFechaCita() != null && registroRequest.getFechaCita().isEmpty()
+    : registroRequest.getFechaCita() != null 
       ? utilService.convertStringToDate(registroRequest.getFechaCita())
       : nuevoRegistro.getFechaCita()
     );
