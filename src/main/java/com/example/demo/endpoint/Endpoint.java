@@ -8,12 +8,16 @@ import javax.validation.constraints.NotNull;
 
 import com.example.demo.data.entities.Registro;
 import com.example.demo.data.entities.Usuario;
+import com.example.demo.data.entities.Medico;
 import com.example.demo.endpoint.message.MessageInformation;
 import com.example.demo.endpoint.message.MessageLogin;
 import com.example.demo.endpoint.message.MessageRegistro;
 import com.example.demo.endpoint.message.MessageUsuario;
+import com.example.demo.endpoint.message.MessageMedico;
 import com.example.demo.service.RegistroService;
 import com.example.demo.service.UsuarioService;
+import com.example.demo.service.MedicoService;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -35,6 +39,9 @@ public class Endpoint {
 
   @Autowired
   private UsuarioService usuarioService;
+
+  @Autowired
+  private MedicoService medicoService;
 
   @PostMapping("/registroMedico")
   public ResponseEntity<Registro> procesoRegistro(@RequestBody MessageRegistro registroRequest){
@@ -90,6 +97,12 @@ public class Endpoint {
       MessageInformation msg = new MessageInformation();
       msg.setContent("Cierre de sesión");
      return ResponseEntity.ok(msg);
+  }
+
+  @PostMapping("/medico")
+  public ResponseEntity<Medico> createMedico(@Valid @RequestBody MessageMedico request){
+      Medico medico = medicoService.createMedico(request);
+      return ResponseEntity.status(HttpStatus.CREATED).body(medico);
   }
 
 }
