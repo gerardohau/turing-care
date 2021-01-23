@@ -14,9 +14,12 @@ import com.example.demo.endpoint.message.MessageLogin;
 import com.example.demo.endpoint.message.MessageRegistro;
 import com.example.demo.endpoint.message.MessageUsuario;
 import com.example.demo.endpoint.message.MessageMedico;
+import com.example.demo.endpoint.message.MessagePaciente;
 import com.example.demo.service.RegistroService;
 import com.example.demo.service.UsuarioService;
 import com.example.demo.service.MedicoService;
+import com.example.demo.service.PacienteService;
+
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +106,12 @@ public class Endpoint {
   public ResponseEntity<Medico> createMedico(@Valid @RequestBody MessageMedico request){
       Medico medico = medicoService.createMedico(request);
       return ResponseEntity.status(HttpStatus.CREATED).body(medico);
+  }
+
+  @PostMapping("/paciente")
+  public ResponseEntity<Paciente> createMedico(@Valid @RequestBody MessagePaciente request){
+      Paciente paciente = pacienteService.createMedico(request);
+      return ResponseEntity.status(HttpStatus.CREATED).body(paciente);
   }
 
 }
