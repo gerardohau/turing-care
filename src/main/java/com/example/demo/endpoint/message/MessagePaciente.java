@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageMedico {
+public class MessagePaciente {
 
     @NotNull(message = "El password es nulo")
     @Size(min = 8, max = 12, message 
@@ -27,18 +27,18 @@ public class MessageMedico {
 
     private String apellidoMaterno;
 
-    private String curp;
-    
-    private String urlCedulta;
-
-    private String urlFoto;
-
-    private String especialidad;
-
-    private String status;
-    
     private String email;
+    
+    private String sexo;
 
-   
     private String telefono;
+
+    private String alergias;
+
+    private String operacionesPrevias;
+
+    private String enfermedadesCronicas;
+
+    private String tratamientosVigentes;
+
 }

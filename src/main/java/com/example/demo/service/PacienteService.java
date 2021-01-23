@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
-import com.example.demo.data.dao.MedicoRepository;
+import com.example.demo.data.dao.PacienteRepository;
 import com.example.demo.data.dao.UsuarioRepository;
 import com.example.demo.data.dao.ClinicaRepository;
 import com.example.demo.data.entities.*;
@@ -22,27 +22,27 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MedicoService{
+public class PacienteService{
 
     @Autowired
-    private MedicoRepository medicoRepository;
+    private PacienteRepository PacienteRepository;
     @Autowired
     private ClinicaRepository clinicaRepository;
 
-    public Medico createMedico(MessageMedico medico) {
-        Medico medico_nuevo = new Medico();
+    public Paciente createPaciente(MessagePaciente Paciente) {
+        Paciente Paciente_nuevo = new Paciente();
         
-        Optional<Clinica> clinicaOpt = clinicaRepository.findById(medico.getClinicaId()); 
-        medico_nuevo.setNombre(medico.getNombre());
-        medico_nuevo.setClinica(clinicaOpt.get());
-        medico_nuevo.setApellidoPaterno(medico.getApellidoPaterno());
-        medico_nuevo.setApellidoMaterno(medico.getApellidoMaterno());
-        medico_nuevo.setCurp(medico.getCurp());
+        Optional<Clinica> clinicaOpt = clinicaRepository.findById(paciente.getClinicaId()); 
+        paciente_nuevo.setNombre(Paciente.getNombre());
+        paciente_nuevo.setClinica(clinicaOpt.get());
+        paciente_nuevo.setApellidoPaterno(Paciente.getApellidoPaterno());
+        paciente_nuevo.setApellidoMaterno(Paciente.getApellidoMaterno());
+        paciente_nuevo.setCurp(paciente.getCurp());
         
 
-        medicoRepository.save(medico_nuevo);
+        PacienteRepository.save(paciente_nuevo);
         
-        return medico_nuevo;
+        return paciente_nuevo;
     }
 
 	
