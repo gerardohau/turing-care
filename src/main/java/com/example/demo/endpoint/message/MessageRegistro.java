@@ -19,7 +19,25 @@ public class MessageRegistro {
 
   private String fechaCita;
 
+  private String fechaCreado;
+
+  private String fechaActualizado;
+
   private Integer idMedico;
 
   private Integer idPaciente;
+
+  private MessagePaciente paciente;
+
+  private MessageMedico medico;
+
+  private String sintomas;
+
+  private String medicamentoRecetado;
+
+  private String observaciones;
+
+  private String tipoTratamiento;
+
+  private String seguimientoTratamiento;
 }

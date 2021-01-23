@@ -1,16 +1,20 @@
 package com.example.demo.service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 import com.example.demo.data.dao.MedicoRepository;
 import com.example.demo.data.dao.PacienteRepository;
 import com.example.demo.data.dao.RegistroRepository;
-import com.example.demo.data.entities.Clinica;
 import com.example.demo.data.entities.Medico;
 import com.example.demo.data.entities.Paciente;
 import com.example.demo.data.entities.Registro;
+import com.example.demo.endpoint.message.MessageMedico;
+import com.example.demo.endpoint.message.MessagePaciente;
 import com.example.demo.endpoint.message.MessageRegistro;
 import com.example.demo.exception.ResourceNotFoundException;
 
@@ -32,7 +36,7 @@ public class RegistroService {
   @Autowired
   private MedicoRepository medicoRepository;
   
-  public Registro processRegister(MessageRegistro registroRequest){
+  public MessageRegistro processRegister(MessageRegistro registroRequest){
    
     boolean isNew = registroRequest.getIdRegistro() == null;
     
@@ -54,9 +58,9 @@ public class RegistroService {
     Optional<Medico> medicoOpt = medicoRepository.findById( registroRequest.getIdMedico() ); 
     Optional<Paciente> pacienteOpt = pacienteRepository.findById( registroRequest.getIdPaciente() ); 
     
-    // if( pacienteOpt.isEmpty() || medicoOpt.isEmpty()  ){
-    //   throw new ResourceNotFoundException("El medico o el paciente no existe");
-    // }
+    if( pacienteOpt.isEmpty() || medicoOpt.isEmpty()  ){
+       throw new ResourceNotFoundException("El medico o el paciente no existe");
+    }
     registro = this.convertRegistroRequestToRegistro(registroRequest, registro, isNew);
     
     medico = medicoOpt.get();
@@ -66,27 +70,60 @@ public class RegistroService {
     registro.setPaciente(paciente);
     
     registro = registroRepository.save(registro);
-     //evitar ciclado
-    medico.setPacientes(null);
-    medico.setRegistros(null);
-    medico.setUsuario(null);
-    medico.setClinica(null);
-    paciente.setRegistros(null);
-    paciente.setMedico(null);
-    ///
-    return registro;
+    
+    MessageRegistro message = new MessageRegistro();
+    
+    MessageMedico mMedico = new MessageMedico();
+    mMedico.setMedicoId( medico.getMedicoId()   );
+    mMedico.setNombre( medico.getNombre() );
+    mMedico.setEmail( medico.getEmail() );
+
+    MessagePaciente mPaciente = new MessagePaciente();
+    mPaciente.setPacienteId( paciente.getPacienteId()  );
+    mPaciente.setNombre( paciente.getNombre()  );
+    mPaciente.setEmail( paciente.getEmail()  );
+
+    message = this.convertRequistroToRegistroMessage(message, registro);
+    message.setMedico(mMedico);
+    message.setPaciente(mPaciente);
+
+    registroRequest = message;
+
+    return registroRequest;
   }
 
-  public List<Registro> obtenerHistorialMedico(Integer pacienteId) {
+  public List<MessageRegistro> obtenerHistorialMedico(Integer pacienteId) {
     Paciente paciente = pacienteRepository.findById(pacienteId).get();
     //paciente.getRegistros().size();
     List<Registro> registros = paciente.getRegistros();
+    List<MessageRegistro> messageRegistros = new LinkedList<>();
 
     for( Registro registro : registros) {
-      registro.setPaciente(null);
+      
+      Medico medico = new Medico();
+      medico = registro.getMedico();
+      
+      MessageRegistro message = new MessageRegistro();
+    
+      MessageMedico mMedico = new MessageMedico();
+      mMedico.setMedicoId( medico.getMedicoId()   );
+      mMedico.setNombre( medico.getNombre() );
+      mMedico.setEmail( medico.getEmail() );
+
+      MessagePaciente mPaciente = new MessagePaciente();
+      mPaciente.setPacienteId( paciente.getPacienteId()  );
+      mPaciente.setNombre( paciente.getNombre()  );
+      mPaciente.setEmail( paciente.getEmail()  );
+
+      message = this.convertRequistroToRegistroMessage(message, registro);
+      message.setMedico(mMedico);
+      message.setPaciente(mPaciente);
+
+      messageRegistros.add(message);
+
     }
 
-    return registros;
+    return messageRegistros;
   }
 
   public String deleteRegister(Integer idRegistro) {
@@ -118,6 +155,41 @@ public class RegistroService {
         : nuevoRegistro.getDescripcion()
     );
 
+    nuevoRegistro.setMedicamentoRecetado( isNew 
+    ? registroRequest.getMedicamentoRecetado()
+    : registroRequest.getMedicamentoRecetado() != null 
+      ? registroRequest.getMedicamentoRecetado()
+      : nuevoRegistro.getMedicamentoRecetado()
+    );
+
+    nuevoRegistro.setObservaciones( isNew 
+    ? registroRequest.getObservaciones()
+    : registroRequest.getObservaciones() != null 
+      ? registroRequest.getObservaciones()
+      : nuevoRegistro.getObservaciones()
+    );
+
+    nuevoRegistro.setSintomas( isNew 
+    ? registroRequest.getSintomas()
+    : registroRequest.getSintomas() != null 
+      ? registroRequest.getSintomas()
+      : nuevoRegistro.getSintomas()
+    );
+
+    nuevoRegistro.setSeguimientoTratamiento( isNew 
+    ? registroRequest.getSeguimientoTratamiento()
+    : registroRequest.getSeguimientoTratamiento() != null 
+      ? registroRequest.getSeguimientoTratamiento()
+      : nuevoRegistro.getSeguimientoTratamiento()
+    );
+
+    nuevoRegistro.setTipoTratamiento( isNew 
+    ? registroRequest.getTipoTratamiento()
+    : registroRequest.getTipoTratamiento() != null 
+      ? registroRequest.getTipoTratamiento()
+      : nuevoRegistro.getTipoTratamiento()
+    );
+    
     nuevoRegistro.setFechaActualizacion(date);
 
     nuevoRegistro.setFechaRegistro( isNew ? date : nuevoRegistro.getFechaRegistro() );
@@ -133,4 +205,22 @@ public class RegistroService {
   }
 
 
+  public MessageRegistro convertRequistroToRegistroMessage(MessageRegistro mensajeRegistro, Registro registro){
+    
+    DateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");  
+
+    mensajeRegistro.setAsunto( registro.getAsunto()  );
+    mensajeRegistro.setDescripcion( registro.getDescripcion()  );
+    mensajeRegistro.setObservaciones( registro.getObservaciones()  );
+    mensajeRegistro.setMedicamentoRecetado( registro.getMedicamentoRecetado()  );
+    mensajeRegistro.setSeguimientoTratamiento( registro.getSeguimientoTratamiento()  );
+    mensajeRegistro.setTipoTratamiento( registro.getTipoTratamiento()  );
+    mensajeRegistro.setSintomas( registro.getSintomas()  );
+    mensajeRegistro.setFechaCita( dateFormat.format( registro.getFechaCita()  )  );
+    mensajeRegistro.setFechaCreado( dateFormat.format( registro.getFechaRegistro()  )  );
+    mensajeRegistro.setFechaActualizado( dateFormat.format( registro.getFechaActualizacion()  )  );
+        
+    return mensajeRegistro;
+
+  }
 }
