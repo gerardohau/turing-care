@@ -107,14 +107,14 @@ public class Endpoint {
   }
 
   @PostMapping("/medico")
-  public ResponseEntity<Medico> createMedico(@Valid @RequestBody MessageMedico request){
-      Medico medico = medicoService.createMedico(request);
+  public ResponseEntity<MessageMedico> createMedico(@Valid @RequestBody MessageMedico request){
+      MessageMedico medico = medicoService.createMedico(request);
       return ResponseEntity.status(HttpStatus.CREATED).body(medico);
   }
 
   @PostMapping("/paciente")
-  public ResponseEntity<Paciente> createPaciente(@Valid @RequestBody MessagePaciente request){
-      Paciente paciente = pacienteService.createPaciente(request);
+  public ResponseEntity<MessagePaciente> createPaciente(@Valid @RequestBody MessagePaciente request){
+      MessagePaciente paciente = pacienteService.createPaciente(request);
       return ResponseEntity.status(HttpStatus.CREATED).body(paciente);
   }
 

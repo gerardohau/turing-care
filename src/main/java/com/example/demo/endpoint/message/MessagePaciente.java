@@ -14,18 +14,19 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MessagePaciente {
 
-    @NotNull(message = "El password es nulo")
-    @Size(min = 8, max = 12, message 
-      = "El password debe tener entre12 y 50 caracteres")
-    @NotEmpty(message = "El título es vacío")
+    private Integer pacienteId;
 
     private Integer clinicaId;
+
+    private Integer medicoId;
 
     private String nombre;
     
     private String apellidoPaterno;
 
     private String apellidoMaterno;
+
+    private String fechaNacimiento;
 
     private String email;
     

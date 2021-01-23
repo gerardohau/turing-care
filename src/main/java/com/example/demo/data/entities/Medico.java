@@ -25,7 +25,7 @@ public class Medico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="doctor_id")
-    private Integer doctor_id;
+    private Integer medicoId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="clinica_id")
