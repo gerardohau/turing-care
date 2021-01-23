@@ -1,27 +1,24 @@
 package com.example.demo.endpoint;
 
+import java.util.List;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.example.demo.data.entities.Registro;
 import com.example.demo.data.entities.Usuario;
-import com.example.demo.data.entities.Medico;
-import com.example.demo.data.entities.Paciente;
 import com.example.demo.endpoint.message.MessageInformation;
 import com.example.demo.endpoint.message.MessageLogin;
-import com.example.demo.endpoint.message.MessageRegistro;
-import com.example.demo.endpoint.message.MessageUsuario;
 import com.example.demo.endpoint.message.MessageMedico;
 import com.example.demo.endpoint.message.MessagePaciente;
-import com.example.demo.service.RegistroService;
-import com.example.demo.service.UsuarioService;
+import com.example.demo.endpoint.message.MessageRegistro;
+import com.example.demo.endpoint.message.MessageUsuario;
 import com.example.demo.service.MedicoService;
 import com.example.demo.service.PacienteService;
-
-
+import com.example.demo.service.RegistroService;
+import com.example.demo.service.UsuarioService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -50,9 +47,15 @@ public class Endpoint {
   @Autowired
   private PacienteService pacienteService;
 
+  @GetMapping("/historial_medico/{idPaciente}")
+  public ResponseEntity<List<MessageRegistro> > obtenerHistorialMedico(@PathVariable Integer idPaciente) {
+
+    return ResponseEntity.status(HttpStatus.OK).body(registroService.obtenerHistorialMedico(idPaciente) );
+  }
+
   @PostMapping("/registroMedico")
-  public ResponseEntity<Registro> procesoRegistro(@RequestBody MessageRegistro registroRequest){
-      Registro registro = registroService.processRegister(registroRequest);
+  public ResponseEntity<MessageRegistro> procesoRegistro(@RequestBody MessageRegistro registroRequest){
+      MessageRegistro registro = registroService.processRegister(registroRequest);
       return ResponseEntity.status(HttpStatus.CREATED).body(registro);
   }
 

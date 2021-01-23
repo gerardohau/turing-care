@@ -40,7 +40,21 @@ public class UsuarioService{
         Optional<Usuario> optional;
         try{ 
            optional = usuarioRepository.findById(idUsuario);
-           return optional.get();
+           Usuario usuario = new Usuario();
+           Medico medico = optional.get().getMedico();
+
+           MessageMedico mMedico = new MessageMedico();
+           mMedico.setMedicoId( medico.getMedicoId()  );
+           mMedico.setEmail( medico.getEmail()  );
+           mMedico.setStatus( medico.getStatus()  );
+           mMedico.setCurp( medico.getCurp()  );
+           mMedico.setEspecialidad( medico.getEspecialidad()  );
+           mMedico.setTelefono( medico.getTelefono()  );
+           mMedico.setNombre( medico.getNombre() );
+           mMedico.setApellidoPaterno(medico.getApellidoPaterno());
+           mMedico.setApellidoMaterno(medico.getApellidoMaterno());
+           usuario.setMessageMedico(mMedico);
+           return usuario;
         }catch(NullPointerException | NoSuchElementException e){
             throw new ResourceNotFoundException("El usuario no se ha encontrado");
         }
@@ -60,7 +74,21 @@ public class UsuarioService{
             }
             
             this.changeRequestUsuarioToUsuario(request,usuario);
-            return usuarioRepository.save(usuario);
+            usuario.setMedico(medico.get() );
+            MessageMedico mMedico = new MessageMedico();
+            mMedico.setMedicoId( medico.get().getMedicoId()  );
+            mMedico.setEmail( medico.get().getEmail()  );
+            mMedico.setStatus( medico.get().getStatus()  );
+            mMedico.setCurp( medico.get().getCurp()  );
+            mMedico.setEspecialidad( medico.get().getEspecialidad()  );
+            mMedico.setTelefono( medico.get().getTelefono()  );
+            mMedico.setNombre( medico.get().getNombre() );
+            mMedico.setApellidoPaterno(medico.get().getApellidoPaterno());
+            mMedico.setApellidoMaterno(medico.get().getApellidoMaterno());
+            usuarioRepository.save(usuario);
+            usuario.setMessageMedico(mMedico);
+
+            return usuario;
         }catch(NullPointerException | NoSuchElementException e){
             throw new ResourceNotFoundException("El usuario ya existe");
         }
@@ -85,7 +113,20 @@ public class UsuarioService{
             }
 
             changeRequestUsuarioToUsuario(request, usuario);
-            return usuarioRepository.save(usuario);
+            MessageMedico mMedico = new MessageMedico();
+            mMedico.setMedicoId( medico.get().getMedicoId()  );
+            mMedico.setEmail( medico.get().getEmail()  );
+            mMedico.setStatus( medico.get().getStatus()  );
+            mMedico.setCurp( medico.get().getCurp()  );
+            mMedico.setEspecialidad( medico.get().getEspecialidad()  );
+            mMedico.setTelefono( medico.get().getTelefono()  );
+            mMedico.setNombre( medico.get().getNombre() );
+            mMedico.setApellidoPaterno(medico.get().getApellidoPaterno());
+            mMedico.setApellidoMaterno(medico.get().getApellidoMaterno());
+            usuarioRepository.save(usuario);
+            usuario.setMessageMedico(mMedico);
+
+            return usuario;
         }else{
             throw new ResourceNotFoundException("El usuario no existe");
         }

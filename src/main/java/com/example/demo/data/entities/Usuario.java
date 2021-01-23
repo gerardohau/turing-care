@@ -1,8 +1,5 @@
 package com.example.demo.data.entities;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -13,8 +10,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.example.demo.endpoint.message.MessageMedico;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "usuario")
@@ -47,6 +50,10 @@ public class Usuario {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name="doctor_id")
+  @JsonIgnore
   Medico medico;
+
+  @Transient
+  MessageMedico messageMedico;
   
 }

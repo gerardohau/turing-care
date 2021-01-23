@@ -1,24 +1,14 @@
 package com.example.demo.service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.UUID;
 
-import javax.validation.Valid;
-
-import com.example.demo.data.dao.MedicoRepository;
-import com.example.demo.data.dao.UsuarioRepository;
 import com.example.demo.data.dao.ClinicaRepository;
-import com.example.demo.data.entities.*;
-import com.example.demo.endpoint.message.*;
-import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.data.dao.MedicoRepository;
+import com.example.demo.data.entities.Clinica;
+import com.example.demo.data.entities.Medico;
+import com.example.demo.endpoint.message.MessageMedico;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
