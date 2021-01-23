@@ -11,6 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.example.demo.endpoint.message.MessageMedico;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -46,6 +50,10 @@ public class Usuario {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name="doctor_id")
+  @JsonIgnore
   Medico medico;
+
+  @Transient
+  MessageMedico messageMedico;
   
 }
