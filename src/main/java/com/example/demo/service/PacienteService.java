@@ -29,15 +29,15 @@ public class PacienteService{
     @Autowired
     private ClinicaRepository clinicaRepository;
 
-    public Paciente createPaciente(MessagePaciente Paciente) {
-        Paciente Paciente_nuevo = new Paciente();
+    public Paciente createPaciente(MessagePaciente paciente) {
+        Paciente paciente_nuevo = new Paciente();
         
         Optional<Clinica> clinicaOpt = clinicaRepository.findById(paciente.getClinicaId()); 
-        paciente_nuevo.setNombre(Paciente.getNombre());
+        paciente_nuevo.setNombre(paciente.getNombre());
         paciente_nuevo.setClinica(clinicaOpt.get());
-        paciente_nuevo.setApellidoPaterno(Paciente.getApellidoPaterno());
-        paciente_nuevo.setApellidoMaterno(Paciente.getApellidoMaterno());
-        paciente_nuevo.setCurp(paciente.getCurp());
+        paciente_nuevo.setApellidoPaterno(paciente.getApellidoPaterno());
+        paciente_nuevo.setApellidoMaterno(paciente.getApellidoMaterno());
+        paciente_nuevo.setEmail(paciente.getEmail());
         
 
         PacienteRepository.save(paciente_nuevo);

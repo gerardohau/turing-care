@@ -56,4 +56,7 @@ public class Clinica {
     @OneToMany(mappedBy = "clinica")
     private List<Medico> medicos;
 
+    @OneToMany(mappedBy = "clinica")
+    private List<Paciente> pacientes;
+
 }

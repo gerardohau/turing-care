@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import com.example.demo.data.entities.Registro;
 import com.example.demo.data.entities.Usuario;
 import com.example.demo.data.entities.Medico;
+import com.example.demo.data.entities.Paciente;
 import com.example.demo.endpoint.message.MessageInformation;
 import com.example.demo.endpoint.message.MessageLogin;
 import com.example.demo.endpoint.message.MessageRegistro;
@@ -45,6 +46,9 @@ public class Endpoint {
 
   @Autowired
   private MedicoService medicoService;
+
+  @Autowired
+  private PacienteService pacienteService;
 
   @PostMapping("/registroMedico")
   public ResponseEntity<Registro> procesoRegistro(@RequestBody MessageRegistro registroRequest){
@@ -109,8 +113,8 @@ public class Endpoint {
   }
 
   @PostMapping("/paciente")
-  public ResponseEntity<Paciente> createMedico(@Valid @RequestBody MessagePaciente request){
-      Paciente paciente = pacienteService.createMedico(request);
+  public ResponseEntity<Paciente> createPaciente(@Valid @RequestBody MessagePaciente request){
+      Paciente paciente = pacienteService.createPaciente(request);
       return ResponseEntity.status(HttpStatus.CREATED).body(paciente);
   }
 
