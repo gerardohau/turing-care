@@ -17,6 +17,11 @@ import com.example.demo.endpoint.message.MessageMedico;
 import com.example.demo.endpoint.message.MessagePaciente;
 import com.example.demo.endpoint.message.MessageRegistro;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.data.entities.Medico;
+import com.example.demo.data.entities.Paciente;
+import com.example.demo.data.entities.Registro;
+import com.example.demo.endpoint.message.RegistroRequest;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -35,6 +40,19 @@ public class RegistroService {
 
   @Autowired
   private MedicoRepository medicoRepository;
+  
+  public Registro obtenerRegistro(Integer idRegistro) {
+    
+    Optional<Registro> optional;
+
+    try { 
+      optional = registroRepository.findById(idRegistro);
+      return optional.get();
+
+    } catch(NullPointerException | NoSuchElementException e) {
+      throw new ResourceNotFoundException("El registro no se ha encontrado");
+    }
+  }
   
   public MessageRegistro processRegister(MessageRegistro registroRequest){
    
