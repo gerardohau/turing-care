@@ -17,6 +17,7 @@ import com.example.demo.data.entities.Medico;
 import com.example.demo.data.entities.Paciente;
 import com.example.demo.data.entities.Registro;
 import com.example.demo.endpoint.message.RegistroRequest;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,19 @@ public class RegistroService {
   private PacienteRepository pacienteRepository;
 
   
+  public Registro obtenerRegistro(Integer idRegistro) {
+    
+    Optional<Registro> optional;
+
+    try { 
+      optional = registroRepository.findById(idRegistro);
+      return optional.get();
+
+    } catch(NullPointerException | NoSuchElementException e) {
+      throw new ResourceNotFoundException("El registro no se ha encontrado");
+    }
+  }
+
   public Registro processRegister(RegistroRequest registroRequest){
    
     boolean isUpdate = registroRequest.getIdRegistro() != null ? true : false;
