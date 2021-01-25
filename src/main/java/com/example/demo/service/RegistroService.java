@@ -84,6 +84,7 @@ public class RegistroService {
     mPaciente.setEmail( paciente.getEmail()  );
 
     message = this.convertRequistroToRegistroMessage(message, registro);
+    message.setIdRegistro( registro.getRegistroId() );
     message.setMedico(mMedico);
     message.setPaciente(mPaciente);
 
@@ -116,6 +117,7 @@ public class RegistroService {
       mPaciente.setEmail( paciente.getEmail()  );
 
       message = this.convertRequistroToRegistroMessage(message, registro);
+      message.setIdRegistro( registro.getRegistroId() );
       message.setMedico(mMedico);
       message.setPaciente(mPaciente);
 
