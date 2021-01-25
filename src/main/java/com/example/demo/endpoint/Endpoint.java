@@ -109,10 +109,29 @@ public class Endpoint {
      return ResponseEntity.ok(msg);
   }
 
+  @GetMapping("/medico/{idMedico}")
+  public ResponseEntity<MessageMedico> obtenerMedico(@PathVariable Integer idMedico) {
+
+    return ResponseEntity.status(HttpStatus.OK).body(medicoService.obtenerMedico(idMedico));
+  }
+
   @PostMapping("/medico")
   public ResponseEntity<MessageMedico> createMedico(@Valid @RequestBody MessageMedico request){
       MessageMedico medico = medicoService.createMedico(request);
       return ResponseEntity.status(HttpStatus.CREATED).body(medico);
+  }
+
+  @GetMapping("/pacientes/medico/{idMedico}")
+  public ResponseEntity<List<MessagePaciente> > obtenerPacientes(@PathVariable Integer idMedico) {
+
+    return ResponseEntity.status(HttpStatus.OK).body(medicoService.obtenerPacientes(idMedico));
+  }
+
+
+  @GetMapping("/paciente/{idPaciente}")
+  public ResponseEntity<MessagePaciente> obtenerPaciente(@PathVariable Integer idPaciente) {
+
+    return ResponseEntity.status(HttpStatus.OK).body(pacienteService.obtenerPaciente(idPaciente) );
   }
 
   @PostMapping("/paciente")

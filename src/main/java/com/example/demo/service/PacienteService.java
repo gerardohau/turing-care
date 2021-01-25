@@ -10,6 +10,8 @@ import com.example.demo.data.entities.Clinica;
 import com.example.demo.data.entities.Medico;
 import com.example.demo.data.entities.Paciente;
 import com.example.demo.endpoint.message.MessagePaciente;
+import com.example.demo.exception.ResourceNotFoundException;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class PacienteService{
 
     @Autowired
-    private PacienteRepository PacienteRepository;
+    private PacienteRepository pacienteRepository;
     @Autowired
     private ClinicaRepository clinicaRepository;
     @Autowired
@@ -46,7 +48,7 @@ public class PacienteService{
         paciente_nuevo.setEnfermedadesCronicas(paciente.getEnfermedadesCronicas());
         paciente_nuevo.setTratamientosVigentes(paciente.getTratamientosVigentes());
         
-        Paciente paciente_creado = PacienteRepository.save(paciente_nuevo);
+        Paciente paciente_creado = pacienteRepository.save(paciente_nuevo);
 
         MessagePaciente nuevo_paciente = new MessagePaciente();
         nuevo_paciente.setPacienteId(paciente_creado.getPacienteId());
@@ -68,6 +70,31 @@ public class PacienteService{
         
     }
 
+    public MessagePaciente obtenerPaciente(Integer idPaciente){
+        Optional<Paciente> pacienteOpt = pacienteRepository.findById(idPaciente); 
+        
+        if( pacienteOpt.isEmpty() ){
+           throw new ResourceNotFoundException("El medico o el paciente no existe");
+        }
+
+        MessagePaciente paciente_obtenido = new MessagePaciente();
+        paciente_obtenido.setPacienteId(pacienteOpt.get().getPacienteId());
+        paciente_obtenido.setNombre(pacienteOpt.get().getNombre());
+        paciente_obtenido.setClinicaId(pacienteOpt.get().getClinica().getClinicaId());
+        paciente_obtenido.setMedicoId(pacienteOpt.get().getMedico().getMedicoId());
+        paciente_obtenido.setApellidoPaterno(pacienteOpt.get().getApellidoPaterno());
+        paciente_obtenido.setApellidoMaterno(pacienteOpt.get().getApellidoMaterno());
+        paciente_obtenido.setEmail(pacienteOpt.get().getEmail());
+        paciente_obtenido.setTelefono(pacienteOpt.get().getTelefono());
+        paciente_obtenido.setAlergias(pacienteOpt.get().getAlergias());
+        paciente_obtenido.setSexo(pacienteOpt.get().getSexo());
+        paciente_obtenido.setOperacionesPrevias(pacienteOpt.get().getOperacionesPrevias());
+        paciente_obtenido.setEnfermedadesCronicas(pacienteOpt.get().getEnfermedadesCronicas());
+        paciente_obtenido.setTratamientosVigentes(pacienteOpt.get().getTratamientosVigentes());
+        paciente_obtenido.setFechaNacimiento(pacienteOpt.get().getFechaNacimiento().toString());
+
+        return paciente_obtenido;
+    }
 	
 
 }
