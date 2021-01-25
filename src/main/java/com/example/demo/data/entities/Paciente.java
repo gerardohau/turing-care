@@ -28,8 +28,9 @@ public class Paciente {
     @Column(name = "paciente_id")
     private Integer pacienteId;
 
-    @Column(name="clinica_id")
-    private Integer clinicaId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="clinica_id")
+    Clinica clinica;
  
     @Column(name="nombre")
     private String nombre;

@@ -1,17 +1,21 @@
 package com.example.demo.service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Optional;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Optional;
 
-
+import com.example.demo.data.dao.MedicoRepository;
 import com.example.demo.data.dao.PacienteRepository;
 import com.example.demo.data.dao.RegistroRepository;
 import com.example.demo.data.entities.Medico;
 import com.example.demo.data.entities.Paciente;
 import com.example.demo.data.entities.Registro;
-import com.example.demo.endpoint.message.RegistroRequest;
+import com.example.demo.endpoint.message.MessageMedico;
+import com.example.demo.endpoint.message.MessagePaciente;
+import com.example.demo.endpoint.message.MessageRegistro;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.data.entities.Medico;
 import com.example.demo.data.entities.Paciente;
@@ -20,8 +24,8 @@ import com.example.demo.endpoint.message.RegistroRequest;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
 @Service
 public class RegistroService {
   
@@ -34,6 +38,8 @@ public class RegistroService {
   @Autowired
   private PacienteRepository pacienteRepository;
 
+  @Autowired
+  private MedicoRepository medicoRepository;
   
   public Registro obtenerRegistro(Integer idRegistro) {
     
@@ -47,16 +53,16 @@ public class RegistroService {
       throw new ResourceNotFoundException("El registro no se ha encontrado");
     }
   }
-
-  public Registro processRegister(RegistroRequest registroRequest){
+  
+  public MessageRegistro processRegister(MessageRegistro registroRequest){
    
-    boolean isUpdate = registroRequest.getIdRegistro() != null ? true : false;
+    boolean isNew = registroRequest.getIdRegistro() == null;
     
     Registro registro = new Registro();
     Medico medico = new Medico();
     Paciente paciente = new Paciente();
     
-    if( isUpdate ){
+    if( !isNew ){
       Optional<Registro> registroOpt = registroRepository.findById( registroRequest.getIdRegistro() );
       
       if( registroOpt.isPresent() ){
@@ -67,26 +73,77 @@ public class RegistroService {
     }
 
     //validar si existe el paciente - medico
-    registro = this.convertRegistroRequestToRegistro(registroRequest, registro, isUpdate);
+    Optional<Medico> medicoOpt = medicoRepository.findById( registroRequest.getIdMedico() ); 
+    Optional<Paciente> pacienteOpt = pacienteRepository.findById( registroRequest.getIdPaciente() ); 
     
+    if( pacienteOpt.isEmpty() || medicoOpt.isEmpty()  ){
+       throw new ResourceNotFoundException("El medico o el paciente no existe");
+    }
+    registro = this.convertRegistroRequestToRegistro(registroRequest, registro, isNew);
+    
+    medico = medicoOpt.get();
+    paciente = pacienteOpt.get();
+
     registro.setMedico(medico);
     registro.setPaciente(paciente);
     
-    //registro = registroRepository.save(registro);
+    registro = registroRepository.save(registro);
     
-    return registro;
+    MessageRegistro message = new MessageRegistro();
+    
+    MessageMedico mMedico = new MessageMedico();
+    mMedico.setMedicoId( medico.getMedicoId()   );
+    mMedico.setNombre( medico.getNombre() );
+    mMedico.setEmail( medico.getEmail() );
+
+    MessagePaciente mPaciente = new MessagePaciente();
+    mPaciente.setPacienteId( paciente.getPacienteId()  );
+    mPaciente.setNombre( paciente.getNombre()  );
+    mPaciente.setEmail( paciente.getEmail()  );
+
+    message = this.convertRequistroToRegistroMessage(message, registro);
+    message.setIdRegistro( registro.getRegistroId() );
+    message.setMedico(mMedico);
+    message.setPaciente(mPaciente);
+
+    registroRequest = message;
+
+    return registroRequest;
   }
 
-  public List<Registro> obtenerHistorialMedico(Integer pacienteId) {
+  public List<MessageRegistro> obtenerHistorialMedico(Integer pacienteId) {
     Paciente paciente = pacienteRepository.findById(pacienteId).get();
     //paciente.getRegistros().size();
     List<Registro> registros = paciente.getRegistros();
+    List<MessageRegistro> messageRegistros = new LinkedList<>();
 
     for( Registro registro : registros) {
-      registro.setPaciente(null);
+      
+      Medico medico = new Medico();
+      medico = registro.getMedico();
+      
+      MessageRegistro message = new MessageRegistro();
+    
+      MessageMedico mMedico = new MessageMedico();
+      mMedico.setMedicoId( medico.getMedicoId()   );
+      mMedico.setNombre( medico.getNombre() );
+      mMedico.setEmail( medico.getEmail() );
+
+      MessagePaciente mPaciente = new MessagePaciente();
+      mPaciente.setPacienteId( paciente.getPacienteId()  );
+      mPaciente.setNombre( paciente.getNombre()  );
+      mPaciente.setEmail( paciente.getEmail()  );
+
+      message = this.convertRequistroToRegistroMessage(message, registro);
+      message.setIdRegistro( registro.getRegistroId() );
+      message.setMedico(mMedico);
+      message.setPaciente(mPaciente);
+
+      messageRegistros.add(message);
+
     }
 
-    return registros;
+    return messageRegistros;
   }
 
   public String deleteRegister(Integer idRegistro) {
@@ -100,31 +157,66 @@ public class RegistroService {
     }
   }
 
-  public Registro convertRegistroRequestToRegistro(RegistroRequest registroRequest, Registro registro, boolean isUpdate ){
+  public Registro convertRegistroRequestToRegistro(MessageRegistro registroRequest, Registro registro, boolean isNew ){
     Registro nuevoRegistro = registro;
     Date date = new Date();
     
-    nuevoRegistro.setAsunto( isUpdate 
+    nuevoRegistro.setAsunto( isNew 
       ? registroRequest.getAsunto()
-      : registroRequest.getAsunto() != null && registroRequest.getAsunto().isEmpty()
+      : registroRequest.getAsunto() != null
         ? registroRequest.getAsunto()
         : nuevoRegistro.getAsunto()
     );
     
-    nuevoRegistro.setDescripcion( isUpdate 
+    nuevoRegistro.setDescripcion( isNew 
       ? registroRequest.getDescripcion()
-      : registroRequest.getDescripcion() != null && registroRequest.getDescripcion().isEmpty()
+      : registroRequest.getDescripcion() != null 
         ? registroRequest.getDescripcion()
         : nuevoRegistro.getDescripcion()
     );
 
+    nuevoRegistro.setMedicamentoRecetado( isNew 
+    ? registroRequest.getMedicamentoRecetado()
+    : registroRequest.getMedicamentoRecetado() != null 
+      ? registroRequest.getMedicamentoRecetado()
+      : nuevoRegistro.getMedicamentoRecetado()
+    );
+
+    nuevoRegistro.setObservaciones( isNew 
+    ? registroRequest.getObservaciones()
+    : registroRequest.getObservaciones() != null 
+      ? registroRequest.getObservaciones()
+      : nuevoRegistro.getObservaciones()
+    );
+
+    nuevoRegistro.setSintomas( isNew 
+    ? registroRequest.getSintomas()
+    : registroRequest.getSintomas() != null 
+      ? registroRequest.getSintomas()
+      : nuevoRegistro.getSintomas()
+    );
+
+    nuevoRegistro.setSeguimientoTratamiento( isNew 
+    ? registroRequest.getSeguimientoTratamiento()
+    : registroRequest.getSeguimientoTratamiento() != null 
+      ? registroRequest.getSeguimientoTratamiento()
+      : nuevoRegistro.getSeguimientoTratamiento()
+    );
+
+    nuevoRegistro.setTipoTratamiento( isNew 
+    ? registroRequest.getTipoTratamiento()
+    : registroRequest.getTipoTratamiento() != null 
+      ? registroRequest.getTipoTratamiento()
+      : nuevoRegistro.getTipoTratamiento()
+    );
+    
     nuevoRegistro.setFechaActualizacion(date);
 
-    nuevoRegistro.setFechaRegistro( isUpdate ? nuevoRegistro.getFechaRegistro() : date );
+    nuevoRegistro.setFechaRegistro( isNew ? date : nuevoRegistro.getFechaRegistro() );
 
-    nuevoRegistro.setFechaCita(isUpdate 
+    nuevoRegistro.setFechaCita(isNew 
     ? utilService.convertStringToDate(registroRequest.getFechaCita())
-    : registroRequest.getFechaCita() != null && registroRequest.getFechaCita().isEmpty()
+    : registroRequest.getFechaCita() != null 
       ? utilService.convertStringToDate(registroRequest.getFechaCita())
       : nuevoRegistro.getFechaCita()
     );
@@ -133,4 +225,22 @@ public class RegistroService {
   }
 
 
+  public MessageRegistro convertRequistroToRegistroMessage(MessageRegistro mensajeRegistro, Registro registro){
+    
+    DateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");  
+
+    mensajeRegistro.setAsunto( registro.getAsunto()  );
+    mensajeRegistro.setDescripcion( registro.getDescripcion()  );
+    mensajeRegistro.setObservaciones( registro.getObservaciones()  );
+    mensajeRegistro.setMedicamentoRecetado( registro.getMedicamentoRecetado()  );
+    mensajeRegistro.setSeguimientoTratamiento( registro.getSeguimientoTratamiento()  );
+    mensajeRegistro.setTipoTratamiento( registro.getTipoTratamiento()  );
+    mensajeRegistro.setSintomas( registro.getSintomas()  );
+    mensajeRegistro.setFechaCita( dateFormat.format( registro.getFechaCita()  )  );
+    mensajeRegistro.setFechaCreado( dateFormat.format( registro.getFechaRegistro()  )  );
+    mensajeRegistro.setFechaActualizado( dateFormat.format( registro.getFechaActualizacion()  )  );
+        
+    return mensajeRegistro;
+
+  }
 }

@@ -34,6 +34,21 @@ public class Registro{
   @Column(name = "descripcion")
   private String descripcion;
 
+  @Column(name = "sintomas")
+  private String sintomas;
+
+  @Column(name = "medicamento_recetado")
+  private String medicamentoRecetado;
+
+  @Column(name = "observaciones")
+  private String observaciones;
+
+  @Column(name = "tipo_tratamiento")
+  private String tipoTratamiento;
+
+  @Column(name = "seguimiento_tratamiento")
+  private String seguimientoTratamiento;
+
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "fecha_registro")
   private Date fechaRegistro;
@@ -47,7 +62,7 @@ public class Registro{
   private Date fechaCita;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="medico_id")
+  @JoinColumn(name="doctor_id")
   Medico medico;
 
   @ManyToOne(fetch = FetchType.LAZY)

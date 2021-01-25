@@ -10,7 +10,9 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
+import com.example.demo.data.dao.MedicoRepository;
 import com.example.demo.data.dao.UsuarioRepository;
+import com.example.demo.data.entities.Medico;
 import com.example.demo.data.entities.Usuario;
 import com.example.demo.endpoint.message.*;
 import com.example.demo.exception.ResourceNotFoundException;
@@ -25,6 +27,9 @@ public class UsuarioService{
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private MedicoRepository medicoRepository;
+
     private final Integer LimiteIntentosLogin = new Integer(3);
 
 	public List<Usuario> getAllUsuarios() {
@@ -35,7 +40,21 @@ public class UsuarioService{
         Optional<Usuario> optional;
         try{ 
            optional = usuarioRepository.findById(idUsuario);
-           return optional.get();
+           Usuario usuario = new Usuario();
+           Medico medico = optional.get().getMedico();
+
+           MessageMedico mMedico = new MessageMedico();
+           mMedico.setMedicoId( medico.getMedicoId()  );
+           mMedico.setEmail( medico.getEmail()  );
+           mMedico.setStatus( medico.getStatus()  );
+           mMedico.setCurp( medico.getCurp()  );
+           mMedico.setEspecialidad( medico.getEspecialidad()  );
+           mMedico.setTelefono( medico.getTelefono()  );
+           mMedico.setNombre( medico.getNombre() );
+           mMedico.setApellidoPaterno(medico.getApellidoPaterno());
+           mMedico.setApellidoMaterno(medico.getApellidoMaterno());
+           usuario.setMessageMedico(mMedico);
+           return usuario;
         }catch(NullPointerException | NoSuchElementException e){
             throw new ResourceNotFoundException("El usuario no se ha encontrado");
         }
@@ -43,16 +62,35 @@ public class UsuarioService{
 
 	public Usuario createUsuario(@Valid MessageUsuario request) {
         try{     
-            Optional<Usuario> optional = usuarioRepository.findByUsuario(request.getUsername() );
+            Optional<Usuario> optional = usuarioRepository.findByUsuario( request.getUsername() != null ? request.getUsername():"" );
             if(optional.isPresent()){
-                throw new ResourceNotFoundException("El usuario no se ha encontrado");
+                throw new ResourceNotFoundException("El usuario ya existe.");
             }
 
             Usuario usuario = new Usuario();
+            Optional<Medico> medico = medicoRepository.findById(request.getMedicoId() );
+            if(!medico.isPresent()){
+                throw new ResourceNotFoundException("El medico no existe.");
+            }
+            
             this.changeRequestUsuarioToUsuario(request,usuario);
-            return usuarioRepository.save(usuario);
+            usuario.setMedico(medico.get() );
+            MessageMedico mMedico = new MessageMedico();
+            mMedico.setMedicoId( medico.get().getMedicoId()  );
+            mMedico.setEmail( medico.get().getEmail()  );
+            mMedico.setStatus( medico.get().getStatus()  );
+            mMedico.setCurp( medico.get().getCurp()  );
+            mMedico.setEspecialidad( medico.get().getEspecialidad()  );
+            mMedico.setTelefono( medico.get().getTelefono()  );
+            mMedico.setNombre( medico.get().getNombre() );
+            mMedico.setApellidoPaterno(medico.get().getApellidoPaterno());
+            mMedico.setApellidoMaterno(medico.get().getApellidoMaterno());
+            usuarioRepository.save(usuario);
+            usuario.setMessageMedico(mMedico);
+
+            return usuario;
         }catch(NullPointerException | NoSuchElementException e){
-            throw new ResourceNotFoundException("El usuario no se ha encontrado");
+            throw new ResourceNotFoundException("El usuario ya existe");
         }
 	}
 
@@ -63,17 +101,35 @@ public class UsuarioService{
             Optional<Usuario> optional = usuarioRepository.findById(request.getIdUsuario());
             usuario = optional.get();
         }catch(NullPointerException | NoSuchElementException e){
-            System.out.println("no existe"); 
+            throw new ResourceNotFoundException("El usuario no existe");
         }
         
         Usuario user = (Usuario)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(user.getUsuarioId() ==usuario.getUsuarioId() ){
+
+            Optional<Medico> medico = medicoRepository.findById(request.getMedicoId() );
+            if(!medico.isPresent()){
+                throw new ResourceNotFoundException("El medico no existe.");
+            }
+
             changeRequestUsuarioToUsuario(request, usuario);
-            return usuarioRepository.save(usuario);
+            MessageMedico mMedico = new MessageMedico();
+            mMedico.setMedicoId( medico.get().getMedicoId()  );
+            mMedico.setEmail( medico.get().getEmail()  );
+            mMedico.setStatus( medico.get().getStatus()  );
+            mMedico.setCurp( medico.get().getCurp()  );
+            mMedico.setEspecialidad( medico.get().getEspecialidad()  );
+            mMedico.setTelefono( medico.get().getTelefono()  );
+            mMedico.setNombre( medico.get().getNombre() );
+            mMedico.setApellidoPaterno(medico.get().getApellidoPaterno());
+            mMedico.setApellidoMaterno(medico.get().getApellidoMaterno());
+            usuarioRepository.save(usuario);
+            usuario.setMessageMedico(mMedico);
+
+            return usuario;
         }else{
-            System.out.println("no existe"); 
+            throw new ResourceNotFoundException("El usuario no existe");
         }
-        return usuario;
 	}
 
 	public void deleteUsuario() {
