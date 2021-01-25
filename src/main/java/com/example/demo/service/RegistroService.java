@@ -128,6 +128,35 @@ public class RegistroService {
     return messageRegistros;
   }
 
+  public MessageRegistro obtenerHistorialMedicobyId(Integer registroId) {
+    Registro registro = registroRepository.findById(registroId).get();
+      
+      Medico medico = new Medico();
+      Paciente paciente = new Paciente();
+      
+      medico = registro.getMedico();
+      paciente = registro.getPaciente();
+      
+      MessageRegistro message = new MessageRegistro();
+    
+      MessageMedico mMedico = new MessageMedico();
+      mMedico.setMedicoId( medico.getMedicoId()   );
+      mMedico.setNombre( medico.getNombre() );
+      mMedico.setEmail( medico.getEmail() );
+
+      MessagePaciente mPaciente = new MessagePaciente();
+      mPaciente.setPacienteId( paciente.getPacienteId()  );
+      mPaciente.setNombre( paciente.getNombre()  );
+      mPaciente.setEmail( paciente.getEmail()  );
+
+      message = this.convertRequistroToRegistroMessage(message, registro);
+      message.setIdRegistro( registro.getRegistroId() );
+      message.setMedico(mMedico);
+      message.setPaciente(mPaciente);
+
+    return message;
+  }
+
   public String deleteRegister(Integer idRegistro) {
     try {
       registroRepository.deleteById(idRegistro);
