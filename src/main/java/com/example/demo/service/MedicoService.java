@@ -7,6 +7,8 @@ import com.example.demo.data.dao.MedicoRepository;
 import com.example.demo.data.entities.Clinica;
 import com.example.demo.data.entities.Medico;
 import com.example.demo.endpoint.message.MessageMedico;
+import com.example.demo.exception.ResourceNotFoundException;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,6 +58,32 @@ public class MedicoService{
         nuevo_medico.setEmail(medico_creado.getEmail());
         
         return nuevo_medico;
+    }
+
+    public MessageMedico obtenerMedico(Integer idMedico){
+        Optional<Medico> medicoOpt = medicoRepository.findById(idMedico); 
+        
+        if(medicoOpt.isEmpty() ){
+           throw new ResourceNotFoundException("El medico o el paciente no existe");
+        }
+
+        MessageMedico medico_obtenido = new MessageMedico();
+
+        medico_obtenido.setMedicoId(medicoOpt.get().getMedicoId());
+        medico_obtenido.setNombre(medicoOpt.get().getNombre());
+        medico_obtenido.setClinicaId(medicoOpt.get().getClinica().getClinicaId());
+        medico_obtenido.setApellidoPaterno(medicoOpt.get().getApellidoPaterno());
+        medico_obtenido.setApellidoMaterno(medicoOpt.get().getApellidoMaterno());
+        medico_obtenido.setCurp(medicoOpt.get().getCurp());
+        medico_obtenido.setUrlCedulta(medicoOpt.get().getUrlCedulta());
+        medico_obtenido.setUrlFoto(medicoOpt.get().getUrlFoto());
+        medico_obtenido.setEspecialidad(medicoOpt.get().getEspecialidad());
+        medico_obtenido.setTelefono(medicoOpt.get().getTelefono());
+        medico_obtenido.setStatus(medicoOpt.get().getStatus());
+        medico_obtenido.setEmail(medicoOpt.get().getEmail());
+
+        return medico_obtenido;
+
     }
 
 	
