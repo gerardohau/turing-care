@@ -53,6 +53,13 @@ public class Endpoint {
     return ResponseEntity.status(HttpStatus.OK).body(registroService.obtenerHistorialMedico(idPaciente) );
   }
 
+  @GetMapping("/historial_medico/id/{idRegistro}")
+  public ResponseEntity<MessageRegistro> obtenerHistorialMedicobyId(@PathVariable Integer idRegistro) {
+
+    return ResponseEntity.status(HttpStatus.OK).body(registroService.obtenerHistorialMedicobyId(idRegistro) );
+  }
+
+
   @PostMapping("/registroMedico")
   public ResponseEntity<MessageRegistro> procesoRegistro(@RequestBody MessageRegistro registroRequest){
       MessageRegistro registro = registroService.processRegister(registroRequest);
