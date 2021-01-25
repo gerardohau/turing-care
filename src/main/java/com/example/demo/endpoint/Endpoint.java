@@ -121,6 +121,12 @@ public class Endpoint {
       return ResponseEntity.status(HttpStatus.CREATED).body(medico);
   }
 
+  @GetMapping("/pacientes/medico/{idMedico}")
+  public ResponseEntity<List<MessagePaciente> > obtenerPacientes(@PathVariable Integer idMedico) {
+
+    return ResponseEntity.status(HttpStatus.OK).body(medicoService.obtenerPacientes(idMedico));
+  }
+
 
   @GetMapping("/paciente/{idPaciente}")
   public ResponseEntity<MessagePaciente> obtenerPaciente(@PathVariable Integer idPaciente) {
