@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import com.example.demo.data.dao.MedicoRepository;
@@ -129,14 +130,15 @@ public class RegistroService {
   }
 
   public MessageRegistro obtenerHistorialMedicobyId(Integer registroId) {
-    Registro registro = registroRepository.findById(registroId).get();
+    try { 
+      Registro registro = registroRepository.findById(registroId).get();
       
       Medico medico = new Medico();
       Paciente paciente = new Paciente();
       
       medico = registro.getMedico();
       paciente = registro.getPaciente();
-      
+
       MessageRegistro message = new MessageRegistro();
     
       MessageMedico mMedico = new MessageMedico();
@@ -153,8 +155,12 @@ public class RegistroService {
       message.setIdRegistro( registro.getRegistroId() );
       message.setMedico(mMedico);
       message.setPaciente(mPaciente);
-
-    return message;
+  
+      return message;
+    } catch(NullPointerException | NoSuchElementException e) {
+      throw new ResourceNotFoundException("El registro no se ha encontrado");
+    }
+    
   }
 
   public String deleteRegister(Integer idRegistro) {
