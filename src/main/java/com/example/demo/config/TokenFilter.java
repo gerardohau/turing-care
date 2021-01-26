@@ -74,7 +74,6 @@ public class TokenFilter extends GenericFilterBean {
 				Integer intent = (user.getIntentoLogin() == null) ? 0:user.getIntentoLogin();
 				user.setIntentoLogin(intent);
 				usuarioRepo.save(user);
-				result = result && user.getIntentoLogin() < 3;
 			}
 			
 			return result;

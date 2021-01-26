@@ -130,6 +130,8 @@ public class UsuarioService{
             usuarioRepository.save(usuario);
             boolean validar_intentos = usuario.getIntentoLogin().equals(LimiteIntentosLogin);
             if(validar_intentos) System.out.println("no existe");
+            throw new ResourceNotFoundException("Mal login.");
+
             
         }
     
