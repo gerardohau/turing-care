@@ -6,9 +6,11 @@ import java.util.List;
 
 import com.example.demo.data.dao.ClinicaRepository;
 import com.example.demo.data.dao.MedicoRepository;
+import com.example.demo.data.dao.UsuarioRepository;
 import com.example.demo.data.entities.Clinica;
 import com.example.demo.data.entities.Medico;
 import com.example.demo.data.entities.Paciente;
+import com.example.demo.data.entities.Usuario;
 import com.example.demo.endpoint.message.MessageMedico;
 import com.example.demo.endpoint.message.MessagePaciente;
 import com.example.demo.exception.ResourceNotFoundException;
@@ -24,13 +26,17 @@ public class MedicoService{
     private MedicoRepository medicoRepository;
     @Autowired
     private ClinicaRepository clinicaRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     public MessageMedico createMedico(MessageMedico medico) {
         Medico medico_nuevo = new Medico();
         
         Optional<Clinica> clinicaOpt = clinicaRepository.findById(medico.getClinicaId()); 
+        Optional<Usuario> usuarioOpt = usuarioRepository.findById(medico.getUsuarioId() );
         medico_nuevo.setNombre(medico.getNombre());
         medico_nuevo.setClinica(clinicaOpt.get());
+        medico_nuevo.setUsuario( usuarioOpt.get() );
         medico_nuevo.setApellidoPaterno(medico.getApellidoPaterno());
         medico_nuevo.setApellidoMaterno(medico.getApellidoMaterno());
         medico_nuevo.setCurp(medico.getCurp());
@@ -51,6 +57,7 @@ public class MedicoService{
         nuevo_medico.setMedicoId(medico_creado.getMedicoId());
         nuevo_medico.setNombre(medico_creado.getNombre());
         nuevo_medico.setClinicaId(medico_creado.getClinica().getClinicaId());
+        nuevo_medico.setUsuarioId( medico_creado.getUsuario().getUsuarioId());
         nuevo_medico.setApellidoPaterno(medico_creado.getApellidoPaterno());
         nuevo_medico.setApellidoMaterno(medico_creado.getApellidoMaterno());
         nuevo_medico.setCurp(medico_creado.getCurp());
@@ -76,6 +83,7 @@ public class MedicoService{
         medico_obtenido.setMedicoId(medicoOpt.get().getMedicoId());
         medico_obtenido.setNombre(medicoOpt.get().getNombre());
         medico_obtenido.setClinicaId(medicoOpt.get().getClinica().getClinicaId());
+        medico_obtenido.setUsuarioId( medicoOpt.get().getUsuario().getUsuarioId());
         medico_obtenido.setApellidoPaterno(medicoOpt.get().getApellidoPaterno());
         medico_obtenido.setApellidoMaterno(medicoOpt.get().getApellidoMaterno());
         medico_obtenido.setCurp(medicoOpt.get().getCurp());

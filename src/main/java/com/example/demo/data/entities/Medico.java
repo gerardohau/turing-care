@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -64,8 +66,10 @@ public class Medico {
     @OneToMany(mappedBy = "medico")
     private List<Registro> registros;
 
-    @OneToMany(mappedBy = "medico")
-    private List<Usuario> usuario;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id")
+    @JsonIgnore
+    Usuario usuario;
 
     @OneToMany(mappedBy = "medico")
     private List<Paciente> pacientes;

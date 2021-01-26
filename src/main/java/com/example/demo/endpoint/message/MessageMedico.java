@@ -18,6 +18,8 @@ public class MessageMedico {
 
     private Integer clinicaId;
 
+    private Integer usuarioId;
+
     private String nombre;
     
     private String apellidoPaterno;

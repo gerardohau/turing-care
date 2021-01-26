@@ -1,6 +1,7 @@
 package com.example.demo.data.entities;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -48,12 +50,10 @@ public class Usuario {
   @Column(name = "intentos_login")
   private Integer intentoLogin = 0;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="doctor_id")
+  @OneToMany(mappedBy = "usuario")
   @JsonIgnore
-  Medico medico;
+  private List<Medico> medicos;
 
   @Transient
   MessageMedico messageMedico;
-  
 }
