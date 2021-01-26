@@ -30,6 +30,9 @@ public class UsuarioService{
     @Autowired
     private MedicoRepository medicoRepository;
 
+    @Autowired
+    private MedicoService medicoService;
+
     private final Integer LimiteIntentosLogin = new Integer(3);
 
 	public List<Usuario> getAllUsuarios() {
@@ -41,19 +44,21 @@ public class UsuarioService{
         try{ 
            optional = usuarioRepository.findById(idUsuario);
            Usuario usuario = new Usuario();
-           Medico medico = optional.get().getMedico();
-
-           MessageMedico mMedico = new MessageMedico();
-           mMedico.setMedicoId( medico.getMedicoId()  );
-           mMedico.setEmail( medico.getEmail()  );
-           mMedico.setStatus( medico.getStatus()  );
-           mMedico.setCurp( medico.getCurp()  );
-           mMedico.setEspecialidad( medico.getEspecialidad()  );
-           mMedico.setTelefono( medico.getTelefono()  );
-           mMedico.setNombre( medico.getNombre() );
-           mMedico.setApellidoPaterno(medico.getApellidoPaterno());
-           mMedico.setApellidoMaterno(medico.getApellidoMaterno());
-           usuario.setMessageMedico(mMedico);
+           List<Medico> medico = usuario.getMedicos();
+            if( !medico.isEmpty() ){
+                MessageMedico mMedico = new MessageMedico();
+                mMedico.setMedicoId( medico.get(0).getMedicoId()  );
+                mMedico.setEmail( medico.get(0).getEmail()  );
+                mMedico.setStatus( medico.get(0).getStatus()  );
+                mMedico.setCurp( medico.get(0).getCurp()  );
+                mMedico.setEspecialidad( medico.get(0).getEspecialidad()  );
+                mMedico.setTelefono( medico.get(0).getTelefono()  );
+                mMedico.setNombre( medico.get(0).getNombre() );
+                mMedico.setApellidoPaterno(medico.get(0).getApellidoPaterno());
+                mMedico.setApellidoMaterno(medico.get(0).getApellidoMaterno());
+                
+                usuario.setMessageMedico(mMedico);
+            }
            return usuario;
         }catch(NullPointerException | NoSuchElementException e){
             throw new ResourceNotFoundException("El usuario no se ha encontrado");
@@ -68,25 +73,8 @@ public class UsuarioService{
             }
 
             Usuario usuario = new Usuario();
-            Optional<Medico> medico = medicoRepository.findById(request.getMedicoId() );
-            if(!medico.isPresent()){
-                throw new ResourceNotFoundException("El medico no existe.");
-            }
-            
             this.changeRequestUsuarioToUsuario(request,usuario);
-            usuario.setMedico(medico.get() );
-            MessageMedico mMedico = new MessageMedico();
-            mMedico.setMedicoId( medico.get().getMedicoId()  );
-            mMedico.setEmail( medico.get().getEmail()  );
-            mMedico.setStatus( medico.get().getStatus()  );
-            mMedico.setCurp( medico.get().getCurp()  );
-            mMedico.setEspecialidad( medico.get().getEspecialidad()  );
-            mMedico.setTelefono( medico.get().getTelefono()  );
-            mMedico.setNombre( medico.get().getNombre() );
-            mMedico.setApellidoPaterno(medico.get().getApellidoPaterno());
-            mMedico.setApellidoMaterno(medico.get().getApellidoMaterno());
             usuarioRepository.save(usuario);
-            usuario.setMessageMedico(mMedico);
 
             return usuario;
         }catch(NullPointerException | NoSuchElementException e){
@@ -107,24 +95,8 @@ public class UsuarioService{
         Usuario user = (Usuario)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(user.getUsuarioId() ==usuario.getUsuarioId() ){
 
-            Optional<Medico> medico = medicoRepository.findById(request.getMedicoId() );
-            if(!medico.isPresent()){
-                throw new ResourceNotFoundException("El medico no existe.");
-            }
-
             changeRequestUsuarioToUsuario(request, usuario);
-            MessageMedico mMedico = new MessageMedico();
-            mMedico.setMedicoId( medico.get().getMedicoId()  );
-            mMedico.setEmail( medico.get().getEmail()  );
-            mMedico.setStatus( medico.get().getStatus()  );
-            mMedico.setCurp( medico.get().getCurp()  );
-            mMedico.setEspecialidad( medico.get().getEspecialidad()  );
-            mMedico.setTelefono( medico.get().getTelefono()  );
-            mMedico.setNombre( medico.get().getNombre() );
-            mMedico.setApellidoPaterno(medico.get().getApellidoPaterno());
-            mMedico.setApellidoMaterno(medico.get().getApellidoMaterno());
             usuarioRepository.save(usuario);
-            usuario.setMessageMedico(mMedico);
 
             return usuario;
         }else{
@@ -165,6 +137,21 @@ public class UsuarioService{
         LocalDateTime tiempoIniToken = LocalDateTime.now();
         usuario.setTiempoIniToken(tiempoIniToken);
         usuarioRepository.save(usuario);
+        List<Medico> medico = usuario.getMedicos();
+        if( !medico.isEmpty() ){
+            MessageMedico mMedico = new MessageMedico();
+            mMedico.setMedicoId( medico.get(0).getMedicoId()  );
+            mMedico.setEmail( medico.get(0).getEmail()  );
+            mMedico.setStatus( medico.get(0).getStatus()  );
+            mMedico.setCurp( medico.get(0).getCurp()  );
+            mMedico.setEspecialidad( medico.get(0).getEspecialidad()  );
+            mMedico.setTelefono( medico.get(0).getTelefono()  );
+            mMedico.setNombre( medico.get(0).getNombre() );
+            mMedico.setApellidoPaterno(medico.get(0).getApellidoPaterno());
+            mMedico.setApellidoMaterno(medico.get(0).getApellidoMaterno());
+            
+            usuario.setMessageMedico(mMedico);
+        }
         return usuario;
      
         
